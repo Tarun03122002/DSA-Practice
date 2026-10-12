@@ -1,11 +1,32 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
-#include<algorithm>
+#include <algorithm>
 using namespace std;
 
+void printArray(int[], int);
+void sort0s1s(int[], int);
+void rightShiftBy1Pos(int[], int);
+void rightShiftByKPosition(int[], int, int);
+void LeftShiftBy1Pos(int[], int);
+void LeftShiftByNPosition(int[],int,int);
 int main()
 {
+    int arr[7] = {1, 0, 1, 1, 0, 1, 0};
+    int size = 7;
+    // sort0s1s(arr, size);
+    int arr1[5] = {4, 8, 1, 2, 5};
+    // rightShiftBy1Pos(arr1,5);
+
+    // right shift by N position
+    // rightShiftByKPosition(arr1, 5, 3);
+
+    // LeftShiftBy1Pos(arr1,5);
+
+    //leftShiftByNposition
+    LeftShiftByNPosition(arr1,5,3);
+
+    printArray(arr1, 5);
 }
 
 vector<int> twoSum(vector<int> &nums, int target)
@@ -129,5 +150,137 @@ vector<vector<int>> threeSum(vector<int> &nums)
         }
     }
     return ans;
+}
 
+void sort0s1s(int arr[], int size)
+{
+
+    // approach 1-> counting
+    // int countZeroes=0,countOnes=0;
+    // for(int i=0;i<size;i++){
+    //     if(arr[i] == 0){
+    //         countZeroes++;
+    //     }else if(arr[i] ==1){
+    //         countOnes++;
+    //     }
+    // }
+    // cout<<"Count of 0's :"<<countZeroes<<endl;
+    // int index =0;
+    // while(countZeroes--){
+    //     arr[index++]=0;
+    // }
+    // while(countOnes--){
+    //     arr[index++]=1;
+    // }
+
+    // approach 2 Two pointer here for this problem Dutch National Flag
+    int left = 0, right = size - 1;
+    while (left < right)
+    {
+        if (arr[left] == 0)
+            left++;
+        else if (arr[right] == 1)
+            right--;
+        else
+            swap(arr[left++], arr[right--]);
+    }
+}
+
+void printArray(int arr[], int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        cout << arr[i] << " ";
+    }
+}
+
+void rightShiftBy1Pos(int arr[], int size)
+{
+    // i/p -> 4,8,1,2,5
+    // o/p -> 5 4 8 1 2
+
+    int temp = arr[size - 1];
+    for (int index = size - 1; index > 0; index--)
+    {
+        arr[index] = arr[index - 1];
+    }
+    arr[0] = temp;
+}
+
+void rightShiftByKPosition(int arr[], int size, int K)
+{
+    // approach 1
+    //  while (K--)
+    //  {
+    //      /* code */
+    //      rightShiftBy1Pos(arr,size);
+    //  }
+
+    // approach 2
+    // i/p -> 4,8,1,2,5
+    // k = 3
+    // o/p -> 1 2 5 4 8
+
+    // i/p -> 4,8,1,2,5
+    // k = 2
+    // o/p -> 2 5 4 8 1
+    // store element from n- k to size-1 in temp
+    int temp[K],tempIndex=0;
+    for (int i = size - K; i < size; i++,tempIndex++)
+    {
+        temp[tempIndex] = arr[i];
+        cout << temp[tempIndex] << " ";
+    }
+    cout << endl;
+    // copy from [size-1 to K]
+    for (int i = size - 1; i >= K; i--)
+    {
+        arr[i] = arr[i - K];
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+
+    for (int i = 0; i < K; i++)
+    {
+        arr[i] = temp[i];
+        cout << temp[i] << " ";
+    }
+    cout << endl;
+}
+
+void LeftShiftBy1Pos(int arr[], int size)
+{
+    // i/p -> [1,2,5,6,7]
+    // o/p -> [2,5,6,7,1]
+
+    // i/p -> [4,8,1,2,5]
+    // o-p -> [8,1,2,5,4];
+    int temp = arr[0];
+    for(int i=1;i<size;i++){
+        arr[i-1]=arr[i];
+    }
+    arr[size-1]=temp;
+}
+void LeftShiftByNPosition(int arr[],int n,int k){
+    //approach 1
+    // while(k--){
+    //     LeftShiftBy1Pos(arr,n);
+    // }
+
+    // approach 2
+    // i/p -> [4,8,1,2,5]
+    // k= 3
+    //o/p -> [2,5,4,8,1]
+    int temp[k];
+    for(int i=0;i<k;i++){
+        temp[i]=arr[i];
+    }
+    int arrIndex=0;
+    for(int i=k;i<n;i++){
+        arrIndex= i-k;
+        arr[arrIndex]=arr[i];
+    }
+    for(int i=arrIndex+1,tempIndex=0;i<n;i++){
+        arr[i] = temp[tempIndex++];
+    }
 }
