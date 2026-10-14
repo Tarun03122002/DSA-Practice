@@ -2,6 +2,7 @@
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include <set>
 using namespace std;
 
 int findPivotIndex(vector<int> &arr)
@@ -93,6 +94,16 @@ int findDuplicate(vector<int> &nums)
 
     // i->p [3,3,3,3,3]
     // 3 3 3 -3 3 -> here return 3 at index 1 arr[1]<0
+
+    // Approach 4
+    // Positioning Method
+    // every element ko uski shi posistion pr rkhenge for Oth index ,then at Oth index we got duplicate element
+    //   till nums[0]!=nums[nums[0]]
+    while (nums[0] != nums[nums[0]])
+    {
+        swap(nums[0], nums[nums[0]]);
+    }
+    return nums[0];
 }
 
 // https://www.geeksforgeeks.org/dsa/find-missing-elements-from-an-array/
@@ -350,6 +361,220 @@ int removeDuplicates(vector<int> &nums)
     // i=2      i=5 u=2 0 1 2 1 1 2 2 3 3 4
     // i=6 i=7.   u=4   0 1 2 3 4 2 2 3 3 4
 }
+
+vector<int> unionOfTwoArrays(vector<int> &arr1, vector<int> &arr2)
+{
+    // whenever we are pushing ans,check if it already exists or not in vector if laready exist do not add
+    // Approach 1  -> using traverse element and linear search if element if exist or not
+    // vector<int> ans;
+    // for (const auto &it : arr1)
+    // {
+    //     if (find(ans.begin(), ans.end(), it) == ans.end())
+    //     {
+    //         // it -> target == end() it means not found so add in and
+    //         ans.push_back(it);
+    //     }
+    // }
+    // for (const auto &it : arr2)
+    // {
+    //     if (find(ans.begin(), ans.end(), it) == ans.end())
+    //     {
+    //         // it -> target == end() it means not found so add in and
+    //         ans.push_back(it);
+    //     }
+    // }
+    // return ans;
+    // Tc -> O(n+m)^2 Sc -> O(1)
+
+    // using set DS
+    set<int> st;
+
+    for (const auto &it : arr1)
+    {
+        st.insert(it);
+    }
+    for (const auto &it : arr2)
+    {
+        st.insert(it);
+    }
+    vector<int> ans;
+    for (const auto &it : st)
+    {
+        ans.push_back(it);
+    }
+    return ans;
+    // TC -> O(n+m)
+    // Sc -> O(n+m);
+}
+
+vector<int> printUnionInCaseofDistinct(vector<int> nums1, vector<int> nums2)
+{
+    //  Tc -> O(nlogn+mlogm) sc->O(1) heap sort does not take extra space
+    // sort
+    sort(nums1.begin(), nums1.end());
+    sort(nums2.begin(), nums2.end());
+
+    // merge for union using 2pointers
+    vector<int> ans;
+    int i = 0, j = 0, m = nums1.size(), n = nums2.size();
+    while (i < m && j < n)
+    {
+        if (nums1[i] < nums2[j])
+        {
+            ans.push_back(nums1[i]);
+            i++;
+        }
+        else if (nums2[j] < nums1[i])
+        {
+            ans.push_back(nums2[j]);
+            j++;
+        }
+        else
+        {
+            // means equal add any element
+            ans.push_back(nums1[i]);
+            i++, j++;
+        }
+    }
+    // if any array exhaust,then add remaining elements
+    while (i < m)
+    {
+        ans.push_back(nums1[i++]);
+    }
+    while (j < n)
+    {
+        ans.push_back(nums2[j++]);
+    }
+    return ans;
+}
+
+// Brute Force -> compare each of arr 1 with arr 2 if it equal then add in  array only if it does not exist in array
+// Tc -> O(n*m*n) Sc -> O(1)
+
+// Better -> using hash set -> Tc -> O(n*m) Sc -> O(n)
+
+// Optimal -> sort and find common elements using 2 pointers
+// TC -> O(nlogn+mlogm) sc-> O(1)
+
+// Optimal using map to store count of element if it 1 then push in ans -> Tc O(n+m) sc-> O(n)
+vector<int> intersectionOfTwoArrays(vector<int> nums1, vector<int> nums2)
+{
+
+    // Approach 1 -> Optimal -> Sort and 2ptr
+
+    // // sort
+    // sort(nums1.begin(), nums1.end());
+    // sort(nums2.begin(), nums2.end());
+    // vector<int> ans;
+    // int i = 0, j = 0, m = nums1.size(), n = nums2.size();
+    // while (i < m && j < n)
+    // {
+    //     if (nums1[i] < nums2[j])
+    //     {
+    //         i++; // array is sorted we know after that in 2nd array of smallest 1st will not occur so ptr of smallest is increased
+    //     }
+    //     else if (nums2[j] < nums1[i])
+    //     {
+    //         j++;
+    //     }
+    //     else
+    //     {
+    //         // equal ,push in ans
+    //         ans.push_back(nums1[i]);
+    //         i++, j++;
+    //     }
+    // }
+    // return ans;
+
+    // Approach 2-> More optimal in compare of Tc but takes extra space > map and count incraement only for count=0
+    unordered_map<int, int> mp;
+    vector<int> ans;
+    for (const auto &it : nums1)
+    {
+        if (mp[it] == 0)
+        {
+            mp[it]++;
+        }
+    }
+    for (const auto &it : nums2)
+    {
+        if (mp[it] == 1)
+        {
+            ans.push_back(it);
+            mp[it]--;
+        }
+    }
+    return ans;
+}
+
+vector<int> commonElements(vector<int> &a, vector<int> &b, vector<int> &c)
+{
+    // code here
+    vector<int> ans;
+    // set<int> st;
+    // // int i=0,j=0,k=0;
+    // // int s1=a.size(),s2=b.size(),s3=c.size();
+
+    // // while(i<s1 && j<s2 && k<s3){
+    // //     if(a[i] == b[j] && b[j]==c[k]){
+    // //         st.insert(a[i]);
+    // //         i++,j++,k++;
+    // //     }
+    // //     else if(a[i]<b[j] && a[i]<c[k]){
+    // //         i++;
+    // //     }else if(b[j]<c[k]){
+    // //         j++;
+    // //     }else {
+    // //         k++;
+    // //     }
+    // // }
+    // // for(auto it:st){
+    // //     ans.push_back(it);
+    // // }
+    // // return ans;
+
+    unordered_map<int, int> mp;
+    for (auto it : a)
+    {
+        if (mp[it] == 0)
+        {
+            mp[it]++;
+        }
+    }
+    // 		for (auto it:mp) {
+    // 			cout << it.first << " " << it.second << endl;
+    // 		}
+    // 		cout << endl;
+    unordered_map<int, int> mp1;
+    for (auto it : b)
+    {
+        if (mp[it] == 1 && mp1[it] == 0)
+        {
+            mp1[it]++;
+        }
+    }
+    // 		for (auto it:mp1) {
+    // 			cout << it.first << " " << it.second << endl;
+    // 		}
+    // 		cout << endl;
+    for (auto it : c)
+    {
+        if (mp1[it] == 1)
+        {
+            ans.push_back(it);
+            mp1[it]--;
+        }
+    }
+    return ans;
+}
+
+void printArray(vector<int> &arr)
+{
+    for (const auto &it : arr)
+    {
+        cout << it << " ";
+    }
+}
 int main()
 {
     vector<int> arr{1, 7, 3, 6, 5, 6};
@@ -363,5 +588,17 @@ int main()
                                {17, 18, 19, 20}};
     // printRowWise2d(mat);
     // printColumnWise(mat);
-    printMatrixInWaveForm(mat);
+    // printMatrixInWaveForm(mat);
+    vector<int> arr3 = {12, 13, 13, 4, 45, 15};
+    vector<int> arr4 = {2, 13, 1, 15};
+    vector<int> unionArr = unionOfTwoArrays(arr3, arr4);
+    printArray(unionArr);
+    vector<int> arr5{2, 3, 1, 4};
+    vector<int> unionofDistinctArrays = printUnionInCaseofDistinct(arr4, arr5);
+    cout << endl;
+    printArray(unionofDistinctArrays);
+    vector<int> intersection = intersectionOfTwoArrays(arr3, arr4);
+    cout << endl;
+
+    printArray(intersection);
 }
